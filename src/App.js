@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import Post from "./Post";
-import { db } from "./firebase";
+import { db, auth } from "./firebase";
 import Modal from "@material-ui/core/Modal";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Input } from "@material-ui/core";
@@ -36,6 +36,24 @@ function App() {
 	const [username, setUsername] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [user, setUser] = useState(null);
+
+	useEffect(() => {
+		const unsubscribe = auth.onAuthStateChanged((authUser) => {
+			if (authUser) {
+				//user has logged in
+				setUser(authUser);
+			} else {
+				//user has logged out
+				setUser(null);
+			}
+
+			return () => {
+				//perform some cleanup actions
+				unsubscribe();
+			};
+		});
+	}, [user, username]);
 
 	useEffect(() => {
 		db.collection("posts").onSnapshot((snapshot) => {
@@ -48,7 +66,19 @@ function App() {
 		});
 	}, []);
 
-	const signUp = (event) => {};
+	const signUp = (event) => {
+		event.preventDefault();
+		auth
+			.createUserWithEmailAndPassword(email, password)
+			.then((authUser) => {
+				return authUser.user.updateProfile({
+					displayName: username,
+				});
+			})
+			.catch((error) => {
+				alert(error.message);
+			});
+	};
 
 	return (
 		<div className='App'>
@@ -58,12 +88,15 @@ function App() {
 					setOpen(false);
 				}}>
 				<div style={modalStyle} className={classes.paper}>
-					<center>
-						<img
-							className='app__headerImage'
-							src='https://www.instagram.com/static/images/web/mobile_nav_type_logo-2x.png/1b47f9d0e595.png'
-							alt=''
-						/>
+					<form className='app__signup'>
+						<center>
+							<img
+								className='app__headerImage'
+								src='https://www.instagram.com/static/images/web/mobile_nav_type_logo-2x.png/1b47f9d0e595.png'
+								alt=''
+							/>
+						</center>
+
 						<Input
 							placeholder='username'
 							type='text'
@@ -82,7 +115,8 @@ function App() {
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
 						/>
-					</center>
+						<Button onClick={signUp}>Sign Up</Button>
+					</form>
 				</div>
 			</Modal>
 
@@ -94,7 +128,9 @@ function App() {
 				/>
 			</div>
 
-			<Button onClick={() => setOpen(true)}>Sign In</Button>
+			<Button onClick={() => setOpen(true)} type='submit'>
+				Sign Up
+			</Button>
 
 			{posts.map(({ post, id }) => {
 				return (
