@@ -1,29 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import Post from "./Post";
+import { db } from "./firebase";
+import Modal from "@material-ui/core/Modal";
 
 function App() {
-	const [posts, setPosts] = useState([
-		{
-			imageURL: "https://reactjs.org/logo-og.png",
-			username: "jrmeyers92",
-			caption: "i'm sooooo good at react",
-		},
-		{
-			imageURL:
-				"https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg?crop=1.00xw:0.669xh;0,0.190xh&resize=1200:*",
-			username: "BillyBob82",
-			caption: "My dog is the cutest ",
-		},
-		{
-			imageURL: "https://reactjs.org/logo-og.png",
-			username: "LittlePete49r9",
-			caption: "Web Dev Yoooo",
-		},
-	]);
+	const [posts, setPosts] = useState([]);
+
+	useEffect(() => {
+		db.collection("posts").onSnapshot((snapshot) => {
+			setPosts(
+				snapshot.docs.map((doc) => ({
+					id: doc.id,
+					post: doc.data(),
+				}))
+			);
+		});
+	}, []);
 
 	return (
 		<div className='App'>
+			{/* <Modal
+				open={open}
+				onClose={handleClose}
+				{body}
+			</Modal> */}
+
 			<div className='app__header'>
 				<img
 					className='app__headerImage'
@@ -32,9 +34,10 @@ function App() {
 				/>
 			</div>
 
-			{posts.map((post) => {
+			{posts.map(({ post, id }) => {
 				return (
 					<Post
+						key={id}
 						imageURL={post.imageURL}
 						caption={post.caption}
 						username={post.username}
