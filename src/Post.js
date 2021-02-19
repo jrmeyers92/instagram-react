@@ -15,28 +15,27 @@ const Post = ({ imageURL, caption, username, postId, user }) => {
 				.collection("posts")
 				.doc(postId)
 				.collection("comments")
+				.orderBy("timestamp", "desc")
 				.onSnapshot((snapshot) => {
 					setComments(
-						snapshot.doc.map((doc) => {
+						snapshot.docs.map((doc) => {
 							doc.data();
 						})
 					);
 				});
-			return unsubscribe();
+			return () => {
+				unsubscribe();
+			};
 		}
 	}, [postId]);
 
 	const postComment = (event) => {
 		event.preventDefault();
-		db.collection("posts")
-			.orderBy("timestamp", "desc")
-			.doc(postId)
-			.collection("comments")
-			.add({
-				text: comment,
-				username: user.displayName,
-				timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-			});
+		db.collection("posts").doc(postId).collection("comments").add({
+			text: comment,
+			username: user.displayName,
+			timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+		});
 
 		setComment("");
 	};
