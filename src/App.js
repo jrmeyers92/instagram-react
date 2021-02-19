@@ -6,6 +6,7 @@ import Modal from "@material-ui/core/Modal";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Input } from "@material-ui/core";
 import ImageUpload from "./ImageUpload";
+import InstagramEmbed from "react-instagram-embed";
 
 function getModalStyle() {
 	const top = 50;
@@ -187,17 +188,49 @@ function App() {
 					</div>
 				)}
 			</div>
-
-			{posts.map(({ post, id }) => {
-				return (
-					<Post
-						key={id}
-						imageURL={post.imageURL}
-						caption={post.caption}
-						username={post.username}
+			<div className='app__posts'>
+				<div className='app__postsLeft'>
+					{posts.map(({ post, id }) => {
+						return (
+							<Post
+								key={id}
+								imageURL={post.imageURL}
+								caption={post.caption}
+								username={post.username}
+								postId={id}
+								user={user}
+							/>
+						);
+					})}
+				</div>
+				<div className='app__postsRight'>
+					{" "}
+					<InstagramEmbed
+						url='https://www.instagram.com/p/B2Nsl_cAgfWLNw7BNeQxZIohTGS57kJSy92ml00/'
+						maxWidth={320}
+						hideCaption={false}
+						containerTagName='div'
+						protocol=''
+						injectScript
+						onLoading={() => {}}
+						onSuccess={() => {}}
+						onAfterRender={() => {}}
+						onFailure={() => {}}
 					/>
-				);
-			})}
+				</div>
+			</div>
+			{/* <InstagramEmbed
+				url='https://www.instagram.com/p/B2Nsl_cAgfWLNw7BNeQxZIohTGS57kJSy92ml00/'
+				maxWidth={320}
+				hideCaption={false}
+				containerTagName='div'
+				protocol=''
+				injectScript
+				onLoading={() => {}}
+				onSuccess={() => {}}
+				onAfterRender={() => {}}
+				onFailure={() => {}}
+			/> */}
 
 			{user?.displayName ? (
 				<ImageUpload username={user.displayName} />

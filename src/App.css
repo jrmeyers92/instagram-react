@@ -7,6 +7,16 @@
 	font-family: Arial, Helvetica, sans-serif;
 }
 
+.app__posts {
+	padding: 20px;
+	display: flex;
+	justify-content: center;
+}
+
+.app__postsRight {
+	margin-left: 20px;
+}
+
 .app__header {
 	object-fit: contain;
 	background-color: white;
