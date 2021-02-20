@@ -205,7 +205,7 @@ function App() {
 				</div>
 				<div className='app__postsRight'>
 					{" "}
-					<InstagramEmbed
+					{/* <InstagramEmbed
 						url='https://www.instagram.com/p/B2Nsl_cAgfWLNw7BNeQxZIohTGS57kJSy92ml00/'
 						maxWidth={320}
 						hideCaption={false}
@@ -216,7 +216,7 @@ function App() {
 						onSuccess={() => {}}
 						onAfterRender={() => {}}
 						onFailure={() => {}}
-					/>
+					/> */}
 				</div>
 			</div>
 			{/* <InstagramEmbed

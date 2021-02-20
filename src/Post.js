@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./Post.css";
 import { Avatar } from "@material-ui/core";
-import firebase from "firebase";
 import { db } from "./firebase";
+import firebase from "firebase";
 
 const Post = ({ imageURL, caption, username, postId, user }) => {
 	const [comments, setComments] = useState([]);
-	const [comment, setComment] = useState([]);
+	const [comment, setComment] = useState("");
 
 	useEffect(() => {
 		let unsubscribe;
@@ -15,18 +15,14 @@ const Post = ({ imageURL, caption, username, postId, user }) => {
 				.collection("posts")
 				.doc(postId)
 				.collection("comments")
-				.orderBy("timestamp", "desc")
 				.onSnapshot((snapshot) => {
-					setComments(
-						snapshot.docs.map((doc) => {
-							doc.data();
-						})
-					);
+					setComments(snapshot.docs.map((doc) => doc.data()));
 				});
-			return () => {
-				unsubscribe();
-			};
 		}
+
+		return () => {
+			unsubscribe();
+		};
 	}, [postId]);
 
 	const postComment = (event) => {
@@ -55,12 +51,14 @@ const Post = ({ imageURL, caption, username, postId, user }) => {
 			</h4>
 			<div className='post__comments'>
 				{comments.map((comment) => {
-					return (
-						<p>
-							<strong>{comment.username}</strong>
-							{comment.text}
-						</p>
-					);
+					if (comment) {
+						return (
+							<p>
+								<strong>{comment.username} </strong>
+								{comment.text}
+							</p>
+						);
+					}
 				})}
 			</div>
 			<form className='post__commentBox'>
