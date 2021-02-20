@@ -25,6 +25,7 @@
 
 .post__avatar {
 	margin-right: 10px;
+	z-index: 0;
 }
 
 .post__commentBox {
